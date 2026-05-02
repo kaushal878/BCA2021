@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  .glass {
+    @apply rounded-2xl border border-white/30 bg-white/50 shadow-glass backdrop-blur-md
+      dark:border-white/10 dark:bg-white/5 dark:shadow-glass-dark;
+  }
+
+  .glass-strong {
+    @apply rounded-2xl border border-white/40 bg-white/70 shadow-glass backdrop-blur-xl
+      dark:border-white/10 dark:bg-white/[0.08] dark:shadow-glass-dark;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm
+      font-medium transition active:scale-[0.98] disabled:cursor-not-allowed
+      disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply btn bg-gradient-to-r from-brand-500 to-purple-500 text-white shadow
+      hover:from-brand-600 hover:to-purple-600;
+  }
+
+  .btn-ghost {
+    @apply btn border border-slate-200 bg-white/60 text-slate-700 hover:bg-white
+      dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-500/90 text-white hover:bg-red-500;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm
+      text-slate-900 placeholder:text-slate-400 focus:border-brand-400
+      focus:outline-none focus:ring-2 focus:ring-brand-300 dark:border-white/10
+      dark:bg-white/5 dark:text-slate-100 dark:placeholder:text-slate-500;
+  }
+
+  .label {
+    @apply mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500
+      dark:text-slate-400;
+  }
+}
+
+/* App background — soft animated gradient */
+.app-bg {
+  background:
+    radial-gradient(
+      1200px 600px at 10% -10%,
+      rgba(99, 102, 241, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 600px at 100% 0%,
+      rgba(168, 85, 247, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 50% 100%,
+      rgba(56, 189, 248, 0.12),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.dark .app-bg {
+  background:
+    radial-gradient(
+      1200px 600px at 10% -10%,
+      rgba(99, 102, 241, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 600px at 100% 0%,
+      rgba(168, 85, 247, 0.22),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 50% 100%,
+      rgba(56, 189, 248, 0.15),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #0b1020 0%, #0a0a1a 100%);
+}

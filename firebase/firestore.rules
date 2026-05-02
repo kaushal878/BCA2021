@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Profiles — readable by anyone signed in (so the directory works for the
+    // batch); writable only by the owning student.
+    match /profiles/{uid} {
+      allow read: if isSignedIn();
+      allow create, update: if isOwner(uid);
+      allow delete: if false;
+    }
+
+    // Files — readable by anyone signed in (batch share); only the uploader
+    // can mutate metadata or delete the document.
+    match /files/{fileId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+    }
+  }
+}
