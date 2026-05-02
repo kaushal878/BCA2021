@@ -27,34 +27,51 @@ export const getProfileByUid = async (
   return snap.data() as StudentProfile;
 };
 
+const seedToProfile = (seed: {
+  name: string;
+  regNumber: string;
+  slug: string;
+}): StudentProfile => ({
+  uid: `seed:${seed.slug}`,
+  name: seed.name,
+  regNumber: seed.regNumber,
+  email: "",
+  photoURL: null,
+  bio: null,
+  slug: seed.slug,
+});
+
 export const getProfileBySlug = async (
   slug: string
 ): Promise<StudentProfile | null> => {
   const fb = getFirebase();
-  if (!fb) return null;
-  const q = query(collection(fb.db, "profiles"), where("slug", "==", slug));
-  const snap = await getDocs(q);
-  if (!snap.empty) return snap.docs[0].data() as StudentProfile;
+  if (fb) {
+    try {
+      const q = query(
+        collection(fb.db, "profiles"),
+        where("slug", "==", slug)
+      );
+      const snap = await getDocs(q);
+      if (!snap.empty) return snap.docs[0].data() as StudentProfile;
+    } catch {
+      // Fall through to the seed lookup if Firestore is unreachable.
+    }
+  }
 
   // Fallback to a seed-only profile so unregistered students still show up.
   const seed = findSeedBySlug(slug);
-  if (!seed) return null;
-  return {
-    uid: `seed:${seed.slug}`,
-    name: seed.name,
-    regNumber: seed.regNumber,
-    email: "",
-    photoURL: null,
-    bio: null,
-    slug: seed.slug,
-  };
+  return seed ? seedToProfile(seed) : null;
 };
 
 export const listAllProfiles = async (): Promise<StudentProfile[]> => {
   const fb = getFirebase();
   if (!fb) return [];
-  const snap = await getDocs(collection(fb.db, "profiles"));
-  return snap.docs.map((d) => d.data() as StudentProfile);
+  try {
+    const snap = await getDocs(collection(fb.db, "profiles"));
+    return snap.docs.map((d) => d.data() as StudentProfile);
+  } catch {
+    return [];
+  }
 };
 
 export const updateProfileFields = async (
